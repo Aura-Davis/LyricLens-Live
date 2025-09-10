@@ -39,6 +39,7 @@ def fetch_lyrics_and_analyze():
         print("Error in /fetch_lyrics:", e)
         return jsonify({"error": str(e)}), 500
 
+
 @app.route("/", methods=["GET"])
 def home():
     return "LyricLens Backend is running!", 200
