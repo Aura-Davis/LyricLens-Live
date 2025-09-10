@@ -12,7 +12,7 @@ export default function SearchForm({ onResults }) {
         setLoading(true);
         setError("");
         try {
-            const res = await axios.post("https://lyriclens-6dwi.onrender.com/fetch_lyrics", {
+            const res = await axios.post("http://127.0.0.1:5000/fetch_lyrics", {
                 title,
                 artist
             });
