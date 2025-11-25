@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import './results.css';
+import './Results.css';
 
 export default function Results({ data }) {
     if (!data) return null;
