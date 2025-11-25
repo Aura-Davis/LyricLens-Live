@@ -15,7 +15,7 @@ export default function SearchForm({ onResults }) {
         setLoading_s(true);
         setError("");
         try {
-            const res = await axios.post("http://127.0.0.1:5000/search_lyrics", {
+            const res = await axios.post("https://lyriclens-6dwi.onrender.com//search_lyrics", {
                 title,
                 artist
             });
@@ -38,7 +38,7 @@ export default function SearchForm({ onResults }) {
         setLoading_a(true);
         setError("");
         try {
-            const res = await axios.post("http://127.0.0.1:5000/analyze_lyrics", 
+            const res = await axios.post("https://lyriclens-6dwi.onrender.com/analyze_lyrics", 
                 { lyrics: lyricsInput },
                 { headers: { "Content-Type": "application/json" } }
             );
