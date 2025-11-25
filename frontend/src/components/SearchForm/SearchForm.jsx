@@ -15,7 +15,7 @@ export default function SearchForm({ onResults }) {
         setLoading_s(true);
         setError("");
         try {
-            const res = await axios.post("https://lyriclens-6dwi.onrender.com//search_lyrics", {
+            const res = await axios.post("https://lyriclens-6dwi.onrender.com/search_lyrics", {
                 title,
                 artist
             });
