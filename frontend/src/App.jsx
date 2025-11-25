@@ -14,10 +14,10 @@ function App() {
     }, [resultData]);
 
     return (
-        <div className="min-h-screen p-4 text-center">
-            <h1 className="text-3xl font-bold mb-6 text-purple-700">LyricLens</h1>
+        <div>
+            <h1 >LyricLens</h1>
             <SearchForm onResults={setResultData} />
-            <div ref={resultsRef} className="mt-10">
+            <div ref={resultsRef} >
                 <Results data={resultData} />
             </div>
         </div>

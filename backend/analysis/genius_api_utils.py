@@ -1,35 +1,26 @@
 import lyricsgenius
 import config
-import re
 
-genius = lyricsgenius.Genius(config.GENIUS_API_KEY)
-
-def clean_lyrics(raw_lyrics):
-    # Remove everything before first [Verse], [Intro], [Chorus], etc.
-    match = re.search(r'\[(Intro|Verse|Chorus|Bridge).*?\]', raw_lyrics)
-    if match:
-        return raw_lyrics[match.start():]
-    else:
-        return raw_lyrics.strip()
+# Initialize Genius client
+genius = lyricsgenius.Genius(config.GENIUS_API_KEY, skip_non_songs=True, excluded_terms=["(Remix)", "(Live)"], remove_section_headers=True)
 
 def fetch_lyrics(title, artist, retries=3):
+    """
+    Fetch only the Genius URL for a song (no lyrics).
+    Returns a dict: {"url": <Genius URL>} or None if not found.
+    """
     for attempt in range(retries):
         try:
             print(f'Searching for "{title}" by {artist}... Attempt {attempt + 1}')
             song = genius.search_song(title, artist)
             if song:
-                # Clean up lyrics before analysis
-                cleaned_lyrics = clean_lyrics(song.lyrics)
-                return {
-                    "lyrics" : cleaned_lyrics,
-                    "url" : song.url
-                }
+                return {"url": song.url}
             else:
                 return None
         except Exception as e:
-            print(f"Error fetching lyrics : {e}")
-            if attempt == retries - 1:
-                return None
-            else:
+            print(f"Error fetching Genius URL: {e}")
+            if attempt < retries - 1:
                 import time
-                time.sleep(1)  # wait 1 second before retry
+                time.sleep(1)
+            else:
+                return None

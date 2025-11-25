@@ -3,14 +3,13 @@ from flask_cors import CORS
 from analysis.nlp_utils import analyze_lyrics
 from analysis.genius_api_utils import fetch_lyrics
 from analysis.spotify_api_utils import search_track
-import config
 import os
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/fetch_lyrics", methods=["POST"])
-def fetch_lyrics_and_analyze():
+@app.route("/search_lyrics", methods=["POST"])
+def search_lyrics():
     try:
         data = request.json
         title = data.get("title")
@@ -20,29 +19,45 @@ def fetch_lyrics_and_analyze():
             return jsonify({"error": "artist and title required"}), 400
 
         result = fetch_lyrics(title, artist)
+        spotify_info = search_track(title, artist)
 
         if result:
-            lyrics = result["lyrics"]
-            spotify_info = search_track(title, artist)
-            analysis = analyze_lyrics(lyrics)
-            
             return jsonify({
-                "lyrics": lyrics,
                 "genius_url": result["url"],
-                "analysis": analysis,
                 "spotify_info": spotify_info
-                }), 200
+            }), 200
         else:
-            return jsonify({"error": "Lyrics not found"}), 404
+            return jsonify({"error": "Song not found"}), 404
 
     except Exception as e:
-        print("Error in /fetch_lyrics:", e)
+        print("Error in /search_lyrics:", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/analyze_lyrics", methods=["POST"])
+def analyze_pasted_lyrics():
+    try:
+        data = request.json
+        lyrics = data.get("lyrics")
+
+        if not lyrics:
+            return jsonify({"error": "lyrics required"}), 400
+
+        analysis = analyze_lyrics(lyrics)
+        return jsonify({
+            "lyrics": lyrics,
+            "analysis": analysis
+        }), 200
+
+    except Exception as e:
+        print("Error in /analyze_lyrics:", e)
         return jsonify({"error": str(e)}), 500
 
 
 @app.route("/", methods=["GET"])
 def home():
     return "LyricLens Backend is running!", 200
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Default 5000 if no PORT env var
